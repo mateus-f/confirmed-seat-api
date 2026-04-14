@@ -55,9 +55,9 @@ server:
 
 jwt:
   public:
-    key: classpath:authz.pub
+    key: classpath:certs/authz.pub
   private:
-    key: classpath:authz.pem
+    key: classpath:certs/authz.pem
 
 springdoc:
   api-docs:
