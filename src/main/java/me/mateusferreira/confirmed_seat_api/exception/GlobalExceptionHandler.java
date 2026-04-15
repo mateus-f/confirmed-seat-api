@@ -21,6 +21,11 @@ public class GlobalExceptionHandler {
         return buildResponse(BAD_REQUEST, "Role inválida.", ex.getMessage());
     }
 
+    @ExceptionHandler(BusinessException.class)
+    public ResponseEntity<ErrorResponse> handleBusiness(BusinessException ex) {
+        return buildResponse(BAD_REQUEST, "Campo inválido ou indisponível", ex.getMessage());
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleValidationExceptions(MethodArgumentNotValidException ex) {
         Map<String, String> errors = new HashMap<>();

@@ -7,6 +7,7 @@ import me.mateusferreira.confirmed_seat_api.model.dto.response.UserCreatedRespon
 import me.mateusferreira.confirmed_seat_api.model.entity.User;
 import me.mateusferreira.confirmed_seat_api.repository.UserRepository;
 import me.mateusferreira.confirmed_seat_api.service.validator.RoleValidator;
+import me.mateusferreira.confirmed_seat_api.service.validator.UserRegisterValidator;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,11 +18,13 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final UserRegisterValidator userRegisterValidator;
 
     @Transactional
     public UserCreatedResponse register(UserCreateRequest request) {
 
         RoleValidator.validate(request.role());
+        userRegisterValidator.validate(request);
 
         User user = UserMapper.toEntity(request);
 
