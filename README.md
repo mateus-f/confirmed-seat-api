@@ -13,8 +13,6 @@ automática e proteção contra inscrições duplicadas sob alta concorrência.*
 ![Swagger](https://img.shields.io/badge/Swagger-85EA2D?style=for-the-badge&logo=swagger&logoColor=black)
 ![Flyway](https://img.shields.io/badge/Flyway-CC0200?style=for-the-badge&logo=flyway&logoColor=white)
 
----
-
 ## 📋 Índice
 
 - [Sobre o Projeto](#-sobre-o-projeto)
@@ -23,8 +21,6 @@ automática e proteção contra inscrições duplicadas sob alta concorrência.*
 - [Endpoints da API](#-endpoints-da-api)
 - [Como Executar](#-como-executar)
 - [Variáveis de Ambiente](#-variáveis-de-ambiente)
-
----
 
 ## 🚀 Sobre o Projeto
 
@@ -40,8 +36,6 @@ duplicatas e sem inscrições além da capacidade. Quando as vagas se esgotam, n
 > 💡 O `confirmation_code` (UUID v4) é o identificador público da inscrição, utilizado para validação de entrada no
 > evento sem expor o ID sequencial interno do banco.
  
----
-
 ## 🛠️ Stack Tecnológica
 
 | Camada          | Tecnologia                     |
@@ -56,8 +50,6 @@ duplicatas e sem inscrições além da capacidade. Quando as vagas se esgotam, n
 | Containerização | Docker & Docker Compose        |
 
  
----
-
 ## 🗄️ Modelagem do Banco de Dados
 
 ### Diagrama Entidade-Relacionamento
@@ -120,8 +112,6 @@ booking_status   → CONFIRMED | CANCELLED | WAITING
 | `idx_booking_confirmation` | `bookings` | `confirmation_code` | B-Tree |
 
  
----
-
 ## 📡 Endpoints da API
 
 > A documentação interativa completa está disponível via **Swagger UI** em `http://localhost:8080/swagger-ui/index.html` após
@@ -158,6 +148,3 @@ booking_status   → CONFIRMED | CANCELLED | WAITING
 | `GET`    | `/bookings/me`                 | `CUSTOMER`  | Lista inscrições do usuário autenticado    |
 | `GET`    | `/bookings/{confirmationCode}` | Autenticado | Busca inscrição pelo código de confirmação |
 | `DELETE` | `/bookings/{confirmationCode}` | `CUSTOMER`  | Cancela uma inscrição                      |
-
- 
----
