@@ -1,0 +1,1 @@
+CREATE INDEX idx_user_cpf ON users(cpf);
