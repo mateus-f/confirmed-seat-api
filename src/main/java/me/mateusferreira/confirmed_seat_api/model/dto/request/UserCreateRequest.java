@@ -32,5 +32,6 @@ public record UserCreateRequest(
 ) {
     public UserCreateRequest {
         cpf = cpf != null ? cpf.replaceAll("\\D", "") : null;
+        email = email.toLowerCase();
     }
 }

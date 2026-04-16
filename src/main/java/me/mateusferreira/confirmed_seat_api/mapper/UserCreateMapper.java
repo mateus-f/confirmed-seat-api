@@ -7,7 +7,6 @@ import me.mateusferreira.confirmed_seat_api.model.entity.User;
 public class UserCreateMapper {
 
     private UserCreateMapper() {
-        /* This utility class should not be instantiated */
     }
 
     public static User toEntity(UserCreateRequest request) {
