@@ -1,10 +1,7 @@
 package me.mateusferreira.confirmed_seat_api.model.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import me.mateusferreira.confirmed_seat_api.model.enums.UserRole;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.JdbcTypeCode;
@@ -17,6 +14,7 @@ import java.time.OffsetDateTime;
 @Builder
 @Getter
 @Setter
+@NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "users")
 public class User {

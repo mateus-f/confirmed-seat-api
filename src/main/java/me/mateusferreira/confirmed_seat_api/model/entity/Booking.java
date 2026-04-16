@@ -1,8 +1,7 @@
 package me.mateusferreira.confirmed_seat_api.model.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
+import lombok.*;
 import me.mateusferreira.confirmed_seat_api.model.enums.BookingStatus;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -12,6 +11,9 @@ import java.util.UUID;
 
 @Entity
 @Builder
+@Getter
+@Setter
+@NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "bookings")
 public class Booking {

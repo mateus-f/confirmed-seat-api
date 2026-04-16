@@ -1,8 +1,7 @@
 package me.mateusferreira.confirmed_seat_api.model.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
+import lombok.*;
 import me.mateusferreira.confirmed_seat_api.model.enums.EventStatus;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -13,6 +12,9 @@ import java.util.List;
 
 @Entity
 @Builder
+@Getter
+@Setter
+@NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "events")
 public class Event {
