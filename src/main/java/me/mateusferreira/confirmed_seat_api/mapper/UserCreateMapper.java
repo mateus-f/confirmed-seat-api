@@ -1,12 +1,12 @@
 package me.mateusferreira.confirmed_seat_api.mapper;
 
 import me.mateusferreira.confirmed_seat_api.model.dto.request.UserCreateRequest;
-import me.mateusferreira.confirmed_seat_api.model.dto.response.UserCreatedResponse;
+import me.mateusferreira.confirmed_seat_api.model.dto.response.UserCreateResponse;
 import me.mateusferreira.confirmed_seat_api.model.entity.User;
 
-public class UserMapper {
+public class UserCreateMapper {
 
-    private UserMapper() {
+    private UserCreateMapper() {
         /* This utility class should not be instantiated */
     }
 
@@ -20,7 +20,7 @@ public class UserMapper {
                 .build();
     }
 
-    public static UserCreatedResponse toResponse(User user) {
-        return new UserCreatedResponse(user.getId(), user.getEmail(), user.getRole(), user.getCreatedAt());
+    public static UserCreateResponse toResponse(User user) {
+        return new UserCreateResponse(user.getId(), user.getEmail(), user.getRole(), user.getCreatedAt());
     }
 }

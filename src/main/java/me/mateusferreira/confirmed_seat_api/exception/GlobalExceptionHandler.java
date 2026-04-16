@@ -3,6 +3,7 @@ package me.mateusferreira.confirmed_seat_api.exception;
 import me.mateusferreira.confirmed_seat_api.model.dto.response.ErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -23,7 +24,12 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(BusinessException.class)
     public ResponseEntity<ErrorResponse> handleBusiness(BusinessException ex) {
-        return buildResponse(BAD_REQUEST, "Campo inválido ou indisponível", ex.getMessage());
+        return buildResponse(BAD_REQUEST, "Campo inválido ou indisponível.", ex.getMessage());
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<ErrorResponse> handleBadCredentials(BadCredentialsException ex) {
+        return buildResponse(BAD_REQUEST, "Credenciais inválidas.", ex.getMessage());
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

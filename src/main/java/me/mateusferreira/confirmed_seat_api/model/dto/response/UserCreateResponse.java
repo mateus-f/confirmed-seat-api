@@ -5,7 +5,7 @@ import me.mateusferreira.confirmed_seat_api.model.enums.UserRole;
 
 import java.time.OffsetDateTime;
 
-public record UserCreatedResponse(
+public record UserCreateResponse(
         @Schema(description = "ID gerado pelo sistema", example = "1")
         Long id,
 

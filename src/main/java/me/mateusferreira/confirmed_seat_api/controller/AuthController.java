@@ -5,11 +5,14 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import me.mateusferreira.confirmed_seat_api.model.dto.request.UserCreateRequest;
-import me.mateusferreira.confirmed_seat_api.model.dto.response.UserCreatedResponse;
+import me.mateusferreira.confirmed_seat_api.model.dto.response.UserLoginResponse;
+import me.mateusferreira.confirmed_seat_api.model.dto.response.UserCreateResponse;
+import me.mateusferreira.confirmed_seat_api.model.dto.request.UserLoginRequest;
 import me.mateusferreira.confirmed_seat_api.service.UserService;
 import org.springframework.web.bind.annotation.*;
 
 import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.OK;
 
 @RestController
 @RequiredArgsConstructor
@@ -25,7 +28,13 @@ public class AuthController {
     )
     @PostMapping("/register")
     @ResponseStatus(CREATED)
-    public UserCreatedResponse register(@Valid @RequestBody UserCreateRequest request) {
+    public UserCreateResponse register(@Valid @RequestBody UserCreateRequest request) {
         return userService.register(request);
+    }
+
+    @PostMapping("/login")
+    @ResponseStatus(OK)
+    public UserLoginResponse login(@Valid @RequestBody UserLoginRequest request){
+        return userService.login(request);
     }
 }
