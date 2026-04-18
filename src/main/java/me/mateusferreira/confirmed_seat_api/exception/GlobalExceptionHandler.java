@@ -51,7 +51,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(AuthenticationException.class)
     public ResponseEntity<ErrorResponse> handleAuthenticationException(AuthenticationException ex) {
-        return buildResponse(UNAUTHORIZED, "Não autorizado.", "Token ausente, malformado ou revogado.");
+        return buildResponse(UNAUTHORIZED, "Não autorizado.", "Token ausente, inválido ou expirado");
     }
 
     @ExceptionHandler(AccessDeniedException.class)
