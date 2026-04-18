@@ -3,7 +3,9 @@ package me.mateusferreira.confirmed_seat_api.exception;
 import me.mateusferreira.confirmed_seat_api.model.dto.response.ErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -13,6 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -39,6 +42,21 @@ public class GlobalExceptionHandler {
                 errors.put(error.getField(), error.getDefaultMessage()));
 
         return buildResponse(BAD_REQUEST, "Validação falhou.", "Campos inválidos na requisição", errors);
+    }
+
+    @ExceptionHandler(UnauthorizedAccessException.class)
+    public ResponseEntity<ErrorResponse> handleUnauthorizedAccess(UnauthorizedAccessException ex) {
+        return buildResponse(UNAUTHORIZED, "Não autorizado.", ex.getMessage());
+    }
+
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<ErrorResponse> handleAuthenticationException(AuthenticationException ex) {
+        return buildResponse(UNAUTHORIZED, "Não autorizado.", "Token ausente, malformado ou revogado.");
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<ErrorResponse> handleAcessDenied(AccessDeniedException ex) {
+        return buildResponse(UNAUTHORIZED, "Acesso negado", "Você não tem permissão para essa funcionalidade.");
     }
 
     private ResponseEntity<ErrorResponse> buildResponse(HttpStatus status, String error, String message) {

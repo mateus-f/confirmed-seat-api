@@ -5,6 +5,9 @@ import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.nimbusds.jose.proc.SecurityContext;
+import lombok.RequiredArgsConstructor;
+import me.mateusferreira.confirmed_seat_api.exception.DelegatedAcessDeniedHandler;
+import me.mateusferreira.confirmed_seat_api.exception.DelegatedAuthenticationEntryPoint;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -31,6 +34,7 @@ import static org.springframework.http.HttpMethod.POST;
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
 
     @Value("${jwt.public.key}")
@@ -39,12 +43,19 @@ public class SecurityConfig {
     @Value("${jwt.private.key}")
     private RSAPrivateKey rsaPrivateKey;
 
+    private final DelegatedAuthenticationEntryPoint delegatedAuthenticationEntryPoint;
+    private final DelegatedAcessDeniedHandler delegatedAcessDeniedHandler;
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, CorsConfigurationSource corsConfigurationSource) throws Exception {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .cors(cors -> cors.configurationSource(corsConfigurationSource))
+                .exceptionHandling(ex -> ex
+                        .authenticationEntryPoint(delegatedAuthenticationEntryPoint)
+                        .accessDeniedHandler(delegatedAcessDeniedHandler)
+                )
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(POST, "/auth/login").permitAll()
                         .requestMatchers(POST, "/auth/register").permitAll()
