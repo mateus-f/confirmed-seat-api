@@ -1,6 +1,7 @@
 package me.mateusferreira.confirmed_seat_api.service;
 
 import lombok.RequiredArgsConstructor;
+import me.mateusferreira.confirmed_seat_api.mapper.AuthenticatedUserMapper;
 import me.mateusferreira.confirmed_seat_api.mapper.UserCreateMapper;
 import me.mateusferreira.confirmed_seat_api.mapper.UserLoginMapper;
 import me.mateusferreira.confirmed_seat_api.mapper.UserSummaryMapper;
@@ -8,6 +9,7 @@ import me.mateusferreira.confirmed_seat_api.model.dto.request.UserCreateRequest;
 import me.mateusferreira.confirmed_seat_api.model.dto.request.UserLoginRequest;
 import me.mateusferreira.confirmed_seat_api.model.dto.response.UserCreateResponse;
 import me.mateusferreira.confirmed_seat_api.model.dto.response.UserLoginResponse;
+import me.mateusferreira.confirmed_seat_api.model.dto.response.UserProfileResponse;
 import me.mateusferreira.confirmed_seat_api.model.entity.User;
 import me.mateusferreira.confirmed_seat_api.repository.UserRepository;
 import me.mateusferreira.confirmed_seat_api.service.validator.RoleValidator;
@@ -33,6 +35,7 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final JwtEncoder jwtEncoder;
     private final UserRegisterValidator userRegisterValidator;
+    private final AuthenticatedUserService authenticatedUserService;
 
 
     @Transactional
@@ -75,5 +78,11 @@ public class UserService {
         long expiresIn = Duration.between(now, expirationTime).getSeconds();
 
         return UserLoginMapper.toResponse(jwtToken, expiresIn, UserSummaryMapper.toResponse(user));
+    }
+
+    public UserProfileResponse getMe() {
+        User user = authenticatedUserService.get();
+
+        return AuthenticatedUserMapper.toResponse(user);
     }
 }
