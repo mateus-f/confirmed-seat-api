@@ -4,7 +4,9 @@ import jakarta.persistence.*;
 import lombok.*;
 import me.mateusferreira.confirmed_seat_api.model.enums.EventStatus;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.type.SqlTypes;
 
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
@@ -30,7 +32,9 @@ public class Event {
     private String location;
 
     @Enumerated(EnumType.STRING)
-    private EventStatus status;
+    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
+    @Builder.Default
+    private EventStatus status = EventStatus.OPEN_FOR_BOOKING;
 
     private Boolean isActive = true;
 

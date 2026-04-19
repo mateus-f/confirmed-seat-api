@@ -27,7 +27,7 @@ INSERT INTO events (title, description, event_date, capacity, location, status) 
 ('Workshop Java & Spring Boot v4', 'Imersão técnica para desenvolvedores.', '2026-06-10 09:00:00-03', 200, 'Av. Paulista, São Paulo - SP', 'OPEN_FOR_BOOKING'),
 ('Festival de Gastronomia Paraense', 'O melhor do Norte: Tacacá e Açaí.', '2026-08-20 12:00:00-03', 3000, 'Estação das Docas, Belém - PA', 'OPEN_FOR_BOOKING'),
 ('Summit de IA 2026', 'Conferência sobre Inteligência Artificial.', '2026-10-05 08:00:00-03', 1200, 'Expocenter Norte, São Paulo - SP', 'OPEN_FOR_BOOKING'),
-('Oktoberfest Blumenau', 'Tradição alemã em Santa Catarina.', '2026-10-07 19:00:00-03', 15000, 'Vila Germânica, Blumenau - SC', 'DRAFT'),
+('Oktoberfest Blumenau', 'Tradição alemã em Santa Catarina.', '2026-10-07 19:00:00-03', 15000, 'Vila Germânica, Blumenau - SC', 'OPEN_FOR_BOOKING'),
 ('Carnaval de Olinda 2026', 'Blocos de rua e frevo histórico.', '2026-02-14 10:00:00-03', 50000, 'Sítio Histórico, Olinda - PE', 'FINISHED'),
 ('Fórum de Cibersegurança', 'Proteção de dados e LGPD na prática.', '2026-05-12 14:00:00-03', 400, 'Centro de Convenções, Brasília - DF', 'OPEN_FOR_BOOKING'),
 ('Maratona de Curitiba', 'Corrida de rua pelas ruas da capital.', '2026-11-22 06:00:00-03', 2000, 'Centro Cívico, Curitiba - PR', 'OPEN_FOR_BOOKING');

@@ -74,7 +74,7 @@ erDiagram
         TIMESTAMPTZ  event_date             "NOT NULL | com timezone"
         INTEGER      capacity               "NOT NULL | limite de vagas"
         VARCHAR      location               "NOT NULL"
-        event_status status                 "DEFAULT 'DRAFT'"
+        event_status status                 "DEFAULT 'OPEN_FOR_BOOKING'"
         BOOLEAN      is_active              "DEFAULT TRUE | soft delete"
         TIMESTAMPTZ  created_at
         TIMESTAMPTZ  updated_at
@@ -99,7 +99,7 @@ erDiagram
 
 ```
 user_role        → ADMIN | CUSTOMER
-event_status     → DRAFT | OPEN_FOR_BOOKING | FINISHED
+event_status     → OPEN_FOR_BOOKING | FINISHED
 booking_status   → CONFIRMED | CANCELLED | WAITING
 ```
 
@@ -111,40 +111,36 @@ booking_status   → CONFIRMED | CANCELLED | WAITING
 | `idx_user_cpf`             | `users`    | `cpf`               | B-Tree |
 | `idx_booking_confirmation` | `bookings` | `confirmation_code` | B-Tree |
 
- 
+
 ## 📡 Endpoints da API
 
-> A documentação interativa completa está disponível via **Swagger UI** em `http://localhost:8080/swagger-ui/index.html` após
-> subir a aplicação.
+> A documentação interativa completa está disponível via **Swagger UI** em `http://localhost:8080/swagger-ui/index.html` após subir a aplicação.
 
 ### 🔑 Auth
-
 | Método | Endpoint         | Acesso  | Descrição                     |
 |--------|------------------|---------|-------------------------------|
 | `POST` | `/auth/register` | Público | Cadastro de novo usuário      |
 | `POST` | `/auth/login`    | Público | Autenticação e geração do JWT |
 
 ### 👤 Users
-
 | Método | Endpoint    | Acesso      | Descrição                    |
 |--------|-------------|-------------|------------------------------|
 | `GET`  | `/users/me` | Autenticado | Dados do usuário autenticado |
 
 ### 📅 Events
-
-| Método   | Endpoint              | Acesso      | Descrição                               |
-|----------|-----------------------|-------------|-----------------------------------------|
-| `POST`   | `/events`             | `ADMIN`     | Cria um novo evento com número de vagas |
-| `GET`    | `/events`             | Autenticado | Lista eventos ativos                    |
-| `GET`    | `/events/{id}`        | Autenticado | Detalha um evento e vagas disponíveis   |
-| `PATCH`  | `/events/{id}/status` | `ADMIN`     | Atualiza o status do evento             |
-| `DELETE` | `/events/{id}`        | `ADMIN`     | Desativa o evento (soft delete)         |
+| Método   | Endpoint              | Acesso      | Descrição                                    |
+|----------|-----------------------|-------------|----------------------------------------------|
+| `POST`   | `/events`             | `ADMIN`     | Cria um novo evento (Status inicial: `OPEN`) |
+| `GET`    | `/events`             | Autenticado | Lista eventos ativos e disponíveis           |
+| `GET`    | `/events/{id}`        | Autenticado | Detalha um evento e vagas disponíveis        |
+| `PUT`    | `/events/{id}`        | `ADMIN`     | Atualiza informações gerais do evento        |
+| `PATCH`  | `/events/{id}/status` | `ADMIN`     | Altera status (ex: `OPEN` para `FINISHED`)   |
+| `DELETE` | `/events/{id}`        | `ADMIN`     | Desativa o evento (soft delete)              |
 
 ### 📝 Inscrições (Bookings)
-
 | Método   | Endpoint                       | Acesso      | Descrição                                  |
 |----------|--------------------------------|-------------|--------------------------------------------|
 | `POST`   | `/bookings`                    | `CUSTOMER`  | Realiza inscrição em um evento             |
 | `GET`    | `/bookings/me`                 | `CUSTOMER`  | Lista inscrições do usuário autenticado    |
 | `GET`    | `/bookings/{confirmationCode}` | Autenticado | Busca inscrição pelo código de confirmação |
-| `DELETE` | `/bookings/{confirmationCode}` | `CUSTOMER`  | Cancela uma inscrição                      |
+| `DELETE` | `/bookings/{confirmationCode}` | `CUSTOMER`  | Cancela uma inscrição e libera vaga        |
