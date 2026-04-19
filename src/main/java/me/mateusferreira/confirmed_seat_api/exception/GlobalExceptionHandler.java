@@ -14,8 +14,7 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
-import static org.springframework.http.HttpStatus.UNAUTHORIZED;
+import static org.springframework.http.HttpStatus.*;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -56,7 +55,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<ErrorResponse> handleAcessDenied(AccessDeniedException ex) {
-        return buildResponse(UNAUTHORIZED, "Acesso negado", "Você não tem permissão para essa funcionalidade.");
+        return buildResponse(FORBIDDEN, "Acesso negado", "Você não tem permissão para essa funcionalidade.");
     }
 
     private ResponseEntity<ErrorResponse> buildResponse(HttpStatus status, String error, String message) {

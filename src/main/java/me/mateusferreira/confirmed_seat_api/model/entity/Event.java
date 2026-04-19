@@ -36,6 +36,7 @@ public class Event {
     @Builder.Default
     private EventStatus status = EventStatus.OPEN_FOR_BOOKING;
 
+    @Builder.Default
     private Boolean isActive = true;
 
     @CreationTimestamp

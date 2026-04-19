@@ -4,7 +4,9 @@ import jakarta.persistence.*;
 import lombok.*;
 import me.mateusferreira.confirmed_seat_api.model.enums.BookingStatus;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.type.SqlTypes;
 
 import java.time.OffsetDateTime;
 import java.util.UUID;
@@ -34,6 +36,7 @@ public class Booking {
     private User user;
 
     @Enumerated(EnumType.STRING)
+    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
     @Builder.Default
     private BookingStatus status = BookingStatus.CONFIRMED;
 
