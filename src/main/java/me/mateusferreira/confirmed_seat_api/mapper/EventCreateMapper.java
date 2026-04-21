@@ -5,8 +5,8 @@ import me.mateusferreira.confirmed_seat_api.model.dto.request.EventCreateRequest
 import me.mateusferreira.confirmed_seat_api.model.dto.response.EventCreateResponse;
 import me.mateusferreira.confirmed_seat_api.model.entity.Event;
 
-public class EventMapper {
-    private EventMapper() {
+public class EventCreateMapper {
+    private EventCreateMapper() {
     }
 
     public static Event toEntity(@Valid EventCreateRequest request) {
