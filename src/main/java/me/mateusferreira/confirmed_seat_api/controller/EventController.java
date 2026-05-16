@@ -28,7 +28,7 @@ import static org.springframework.http.HttpStatus.CREATED;
 @SecurityRequirement(name = "bearerAuth")
 public class EventController {
 
-    private final Eventice eventService;
+    private final EventService eventService;
 
     @Operation(
             summary = "Criar um novo evento",
