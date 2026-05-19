@@ -67,4 +67,10 @@ public class EventController {
     public EventDetailResponse updateEvent(@PathVariable Long id, @Valid @RequestBody EventUpdateRequest request) {
         return eventService.update(id, request);
     }
+
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Void> deleteEvent(@PathVariable Long id) {
+        return eventService.delete(id);
+    }
 }

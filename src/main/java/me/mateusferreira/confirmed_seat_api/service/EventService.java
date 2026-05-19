@@ -14,6 +14,7 @@ import me.mateusferreira.confirmed_seat_api.model.entity.Event;
 import me.mateusferreira.confirmed_seat_api.repository.EventRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -72,5 +73,16 @@ public class EventService {
         eventRepository.save(event);
 
         return EventDetailMapper.toResponse(event, calculateReservedSeats(event), calculateAvailableSeats(event));
+    }
+
+    public ResponseEntity<Void> delete(Long id) {
+        Event event = eventRepository.findById(id)
+                .orElseThrow(() -> new EventNotFoundException(id));
+
+        event.setIsActive(false);
+
+        eventRepository.save(event);
+
+        return ResponseEntity.noContent().build();
     }
 }
