@@ -6,6 +6,7 @@ import me.mateusferreira.confirmed_seat_api.mapper.EventCreateMapper;
 import me.mateusferreira.confirmed_seat_api.mapper.EventDetailMapper;
 import me.mateusferreira.confirmed_seat_api.mapper.EventSummaryMapper;
 import me.mateusferreira.confirmed_seat_api.model.dto.request.EventCreateRequest;
+import me.mateusferreira.confirmed_seat_api.model.dto.request.EventUpdateRequest;
 import me.mateusferreira.confirmed_seat_api.model.dto.response.EventCreateResponse;
 import me.mateusferreira.confirmed_seat_api.model.dto.response.EventDetailResponse;
 import me.mateusferreira.confirmed_seat_api.model.dto.response.EventSummaryResponse;
@@ -55,5 +56,21 @@ public class EventService {
 
     private Integer calculateAvailableSeats(Event event) {
         return event.getCapacity() - calculateReservedSeats(event);
+    }
+
+    @Transactional
+    public EventDetailResponse update(Long id, EventUpdateRequest request) {
+        Event event = eventRepository.findById(id)
+                .orElseThrow(() -> new EventNotFoundException(id));
+
+        if (request.title() != null) event.setTitle(request.title());
+        if (request.description() != null) event.setDescription(request.description());
+        if (request.location() != null) event.setLocation(request.location());
+        if (request.eventDate() != null) event.setEventDate(request.eventDate());
+        if (request.status() != null) event.setStatus(request.status());
+
+        eventRepository.save(event);
+
+        return EventDetailMapper.toResponse(event, calculateReservedSeats(event), calculateAvailableSeats(event));
     }
 }

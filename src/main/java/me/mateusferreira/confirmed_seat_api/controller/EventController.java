@@ -8,7 +8,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import me.mateusferreira.confirmed_seat_api.model.dto.request.EventCreateRequest;
+import me.mateusferreira.confirmed_seat_api.model.dto.request.EventUpdateRequest;
 import me.mateusferreira.confirmed_seat_api.model.dto.response.EventCreateResponse;
+import me.mateusferreira.confirmed_seat_api.model.dto.response.EventDetailResponse;
 import me.mateusferreira.confirmed_seat_api.model.dto.response.EventSummaryResponse;
 import me.mateusferreira.confirmed_seat_api.service.EventService;
 import org.springdoc.core.annotations.ParameterObject;
@@ -56,7 +58,13 @@ public class EventController {
     }
 
     @GetMapping("/{id}")
-    public EventSummaryResponse getEventById(@PathVariable Long id) {
+    public EventDetailResponse getEventById(@PathVariable Long id) {
         return eventService.getEventById(id);
+    }
+
+    @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public EventDetailResponse updateEvent(@PathVariable Long id, @Valid @RequestBody EventUpdateRequest request) {
+        return eventService.update(id, request);
     }
 }
