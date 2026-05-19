@@ -1,6 +1,7 @@
 package me.mateusferreira.confirmed_seat_api.service;
 
 import lombok.RequiredArgsConstructor;
+import me.mateusferreira.confirmed_seat_api.exception.EventNotFoundException;
 import me.mateusferreira.confirmed_seat_api.mapper.EventCreateMapper;
 import me.mateusferreira.confirmed_seat_api.mapper.EventSummaryMapper;
 import me.mateusferreira.confirmed_seat_api.model.dto.request.EventCreateRequest;
@@ -35,6 +36,13 @@ public class EventService {
         Page<Event> eventPage = eventRepository.findByIsActiveTrueAndStatus(OPEN_FOR_BOOKING, pageable);
 
         return eventPage.map(event -> EventSummaryMapper.toResponse(event, calculateAvailableSeats(event)));
+    }
+
+    public EventSummaryResponse getEventById(Long id) {
+        Event event = eventRepository.findById(id)
+                .orElseThrow(() -> new EventNotFoundException(id));
+
+        return EventSummaryMapper.toResponse(event, calculateAvailableSeats(event));
     }
 
     private Integer calculateAvailableSeats(Event event) {

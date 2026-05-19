@@ -54,4 +54,9 @@ public class EventController {
 
         return ResponseEntity.ok(event);
     }
+
+    @GetMapping("/{id}")
+    public EventSummaryResponse getEventById(@PathVariable Long id) {
+        return eventService.getEventById(id);
+    }
 }
