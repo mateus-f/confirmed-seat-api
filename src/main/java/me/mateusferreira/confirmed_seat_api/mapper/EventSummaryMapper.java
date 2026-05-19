@@ -7,7 +7,7 @@ public class EventSummaryMapper {
     private EventSummaryMapper() {
     }
 
-    public static EventSummaryResponse toResponse(Event event, Integer availableSeats) {
-        return new EventSummaryResponse(event.getId(), event.getTitle(), event.getLocation(), event.getEventDate(), event.getCapacity(), availableSeats, event.getStatus());
+    public static EventSummaryResponse toResponse(Event event) {
+        return new EventSummaryResponse(event.getId(), event.getTitle(), event.getLocation(), event.getEventDate(), event.getCapacity(), event.getStatus());
     }
 }

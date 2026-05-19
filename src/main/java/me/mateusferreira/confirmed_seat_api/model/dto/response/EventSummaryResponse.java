@@ -9,7 +9,6 @@ public record EventSummaryResponse(
         String title,
         String location,
         OffsetDateTime eventDate,
-        Integer capacity,
         Integer availableSeats,
         EventStatus status
 ) {
