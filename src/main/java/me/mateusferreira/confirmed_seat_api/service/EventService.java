@@ -55,7 +55,7 @@ public class EventService {
                 .count();
     }
 
-    private Integer calculateAvailableSeats(Event event) {
+    public Integer calculateAvailableSeats(Event event) {
         return event.getCapacity() - calculateReservedSeats(event);
     }
 
