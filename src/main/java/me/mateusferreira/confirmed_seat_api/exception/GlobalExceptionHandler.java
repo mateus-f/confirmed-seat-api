@@ -26,7 +26,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(BusinessException.class)
     public ResponseEntity<ErrorResponse> handleBusiness(BusinessException ex) {
-        return buildResponse(BAD_REQUEST, "Campo inválido ou indisponível.", ex.getMessage());
+        return buildResponse(BAD_REQUEST, "Regra de negócio violada.", ex.getMessage());
     }
 
     @ExceptionHandler(BadCredentialsException.class)
@@ -61,6 +61,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(EventNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleEventNotFound(EventNotFoundException ex) {
         return buildResponse(NOT_FOUND, "Evento não encontrado.", ex.getMessage());
+    }
+
+    @ExceptionHandler(ConflictException.class)
+    public ResponseEntity<ErrorResponse> handleConflict(ConflictException ex) {
+        return buildResponse(CONFLICT, "Conflito com o estado atual do recurso.", ex.getMessage());
     }
 
     private ResponseEntity<ErrorResponse> buildResponse(HttpStatus status, String error, String message) {
