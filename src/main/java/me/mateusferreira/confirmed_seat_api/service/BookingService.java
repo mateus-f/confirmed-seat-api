@@ -1,13 +1,12 @@
 package me.mateusferreira.confirmed_seat_api.service;
 
 import lombok.RequiredArgsConstructor;
-import me.mateusferreira.confirmed_seat_api.exception.AlreadyRegisteredException;
-import me.mateusferreira.confirmed_seat_api.exception.EventCapacityExceededException;
-import me.mateusferreira.confirmed_seat_api.exception.EventFinishedException;
-import me.mateusferreira.confirmed_seat_api.exception.EventNotFoundException;
+import me.mateusferreira.confirmed_seat_api.exception.*;
+import me.mateusferreira.confirmed_seat_api.mapper.BookingDetailMapper;
 import me.mateusferreira.confirmed_seat_api.mapper.BookingSummaryMapper;
 import me.mateusferreira.confirmed_seat_api.mapper.CreateBookingMapper;
 import me.mateusferreira.confirmed_seat_api.model.dto.request.CreateBookingRequest;
+import me.mateusferreira.confirmed_seat_api.model.dto.response.BookingDetailResponse;
 import me.mateusferreira.confirmed_seat_api.model.dto.response.BookingSummaryResponse;
 import me.mateusferreira.confirmed_seat_api.model.dto.response.CreateBookingResponse;
 import me.mateusferreira.confirmed_seat_api.model.entity.Booking;
@@ -23,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.OffsetDateTime;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -65,5 +65,14 @@ public class BookingService {
         Page<Booking> bookingPage = bookingRepository.findAllByUserIdAndStatusNot(user.getId(), BookingStatus.CANCELLED, pageable);
 
         return bookingPage.map(BookingSummaryMapper::toResponse);
+    }
+
+    public BookingDetailResponse getBookingByConfirmationCode(UUID confirmationCode) {
+        User user = authenticatedUserService.get();
+
+        Booking booking = bookingRepository.findByConfirmationCodeAndUserId(confirmationCode, user.getId())
+                .orElseThrow(() -> new BookingNotFoundException("Inscrição não encontrada!"));
+
+        return BookingDetailMapper.toResponse(booking);
     }
 }
