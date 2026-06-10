@@ -5,15 +5,20 @@ import me.mateusferreira.confirmed_seat_api.exception.AlreadyRegisteredException
 import me.mateusferreira.confirmed_seat_api.exception.EventCapacityExceededException;
 import me.mateusferreira.confirmed_seat_api.exception.EventFinishedException;
 import me.mateusferreira.confirmed_seat_api.exception.EventNotFoundException;
+import me.mateusferreira.confirmed_seat_api.mapper.BookingSummaryMapper;
 import me.mateusferreira.confirmed_seat_api.mapper.CreateBookingMapper;
 import me.mateusferreira.confirmed_seat_api.model.dto.request.CreateBookingRequest;
+import me.mateusferreira.confirmed_seat_api.model.dto.response.BookingSummaryResponse;
 import me.mateusferreira.confirmed_seat_api.model.dto.response.CreateBookingResponse;
 import me.mateusferreira.confirmed_seat_api.model.entity.Booking;
 import me.mateusferreira.confirmed_seat_api.model.entity.Event;
 import me.mateusferreira.confirmed_seat_api.model.entity.User;
+import me.mateusferreira.confirmed_seat_api.model.enums.BookingStatus;
 import me.mateusferreira.confirmed_seat_api.model.enums.EventStatus;
 import me.mateusferreira.confirmed_seat_api.repository.BookingRepository;
 import me.mateusferreira.confirmed_seat_api.repository.EventRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -52,5 +57,13 @@ public class BookingService {
         bookingRepository.save(booking);
 
         return CreateBookingMapper.toResponse(booking);
+    }
+
+    public Page<BookingSummaryResponse> findAllMyBookings(Pageable pageable) {
+        User user = authenticatedUserService.get();
+
+        Page<Booking> bookingPage = bookingRepository.findAllByUserIdAndStatusNot(user.getId(), BookingStatus.CANCELLED, pageable);
+
+        return bookingPage.map(BookingSummaryMapper::toResponse);
     }
 }
