@@ -58,14 +58,14 @@ public class GlobalExceptionHandler {
         return buildResponse(FORBIDDEN, "Acesso negado", "Você não tem permissão para essa funcionalidade.");
     }
 
-    @ExceptionHandler(EventNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleEventNotFound(EventNotFoundException ex) {
-        return buildResponse(NOT_FOUND, "Evento não encontrado.", ex.getMessage());
-    }
-
     @ExceptionHandler(ConflictException.class)
     public ResponseEntity<ErrorResponse> handleConflict(ConflictException ex) {
         return buildResponse(CONFLICT, "Conflito com o estado atual do recurso.", ex.getMessage());
+    }
+
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleNotFound(NotFoundException ex) {
+        return buildResponse(NOT_FOUND, "Recurso não encontrado.", ex.getMessage());
     }
 
     private ResponseEntity<ErrorResponse> buildResponse(HttpStatus status, String error, String message) {
