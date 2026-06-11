@@ -75,6 +75,7 @@ public class EventService {
         return EventDetailMapper.toResponse(event, calculateReservedSeats(event), calculateAvailableSeats(event));
     }
 
+    @Transactional
     public ResponseEntity<Void> delete(Long id) {
         Event event = eventRepository.findById(id)
                 .orElseThrow(() -> new EventNotFoundException(id));

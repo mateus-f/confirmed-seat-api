@@ -84,6 +84,7 @@ public class BookingService {
         return BookingDetailMapper.toResponse(findBooking(confirmationCode));
     }
 
+    @Transactional
     public BookingDetailResponse cancelBookingByConfirmationCode(UUID confirmationCode) {
         Booking booking = findBooking(confirmationCode);
 
