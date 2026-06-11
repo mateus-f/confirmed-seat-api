@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 import java.util.Map;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
+import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.NOT_REQUIRED;
 
 @Schema(description = "Estrutura padrão para respostas de erro da API")
 @JsonInclude(NON_NULL)
@@ -18,14 +19,17 @@ public record ErrorResponse(
         @Schema(description = "Código de status HTTP", example = "400")
         int status,
 
-        @Schema(description = "Título curto do erro", example = "Bad Request")
+        @Schema(description = "Título curto do erro", example = "Validação falhou.")
         String error,
 
-        @Schema(description = "Mensagem detalhada sobre o problema", example = "Erro de validação nos campos enviados")
+        @Schema(description = "Mensagem detalhada sobre o problema", example = "Campos inválidos na requisição")
         String message,
 
-        @Schema(description = "Mapa contendo detalhes específicos de cada campo (se houver)",
-                example = "{\"email\": \"E-mail inválido.\", \"password\": \"Senha muito curta.\"}")
+        @Schema(
+                description = "Mapa contendo detalhes específicos de cada campo (se houver)",
+                example = "{\"email\": \"E-mail inválido.\", \"password\": \"Senha muito curta.\"}",
+                requiredMode = NOT_REQUIRED
+        )
         Map<String, String> details
 ) {
 }

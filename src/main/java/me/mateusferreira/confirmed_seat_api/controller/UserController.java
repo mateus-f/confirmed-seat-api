@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/users")
-@Tag(name = "Usuários", description = "Gerenciamento e consulta de dados dos usuários")
+@Tag(name = "Usuários", description = "Endpoints para gerenciamento e consulta de dados dos usuários")
 public class UserController {
 
     private final UserService userService;
@@ -34,7 +34,7 @@ public class UserController {
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
     @GetMapping("/me")
-    public UserProfileResponse me(){
+    public UserProfileResponse me() {
         return userService.getMe();
     }
 }
