@@ -43,4 +43,8 @@ public class BookingController {
         return bookingService.getBookingByConfirmationCode(confirmationCode);
     }
 
+    @DeleteMapping("/{confirmationCode}")
+    public BookingDetailResponse cancelBookingByConfirmationCode(@PathVariable UUID confirmationCode) {
+        return bookingService.cancelBookingByConfirmationCode(confirmationCode);
+    }
 }

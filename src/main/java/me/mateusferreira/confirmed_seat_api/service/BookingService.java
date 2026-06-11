@@ -67,11 +67,28 @@ public class BookingService {
         return bookingPage.map(BookingSummaryMapper::toResponse);
     }
 
-    public BookingDetailResponse getBookingByConfirmationCode(UUID confirmationCode) {
+    private Booking findBooking(UUID confirmationCode) {
         User user = authenticatedUserService.get();
 
-        Booking booking = bookingRepository.findByConfirmationCodeAndUserId(confirmationCode, user.getId())
+        return bookingRepository.findByConfirmationCodeAndUserId(confirmationCode, user.getId())
                 .orElseThrow(() -> new BookingNotFoundException("Inscrição não encontrada!"));
+    }
+
+    public BookingDetailResponse getBookingByConfirmationCode(UUID confirmationCode) {
+        return BookingDetailMapper.toResponse(findBooking(confirmationCode));
+    }
+
+    public BookingDetailResponse cancelBookingByConfirmationCode(UUID confirmationCode) {
+        Booking booking = findBooking(confirmationCode);
+
+        if (booking.getStatus() == BookingStatus.CANCELLED) {
+            throw new BusinessException("Inscrição do evento já se encontra cancelada!");
+        }
+
+        booking.setStatus(BookingStatus.CANCELLED);
+        booking.setCancelledAt(OffsetDateTime.now());
+        
+        bookingRepository.save(booking);
 
         return BookingDetailMapper.toResponse(booking);
     }
