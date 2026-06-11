@@ -18,6 +18,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -33,7 +34,7 @@ public class BookingController {
 
     @Operation(
             summary = "Criar uma nova reserva",
-            description = "Efetua a reserva de uma vaga em um evento para o usuário autenticado. Valida a disponibilidade de vagas em tempo real."
+            description = "Efetua a reserva de uma vaga em um evento para o usuário autenticado. Valida a disponibilidade de vagas em tempo real. **Acesso restrito a clientes (ROLE_CUSTOMER).**"
     )
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Reserva criada com sucesso"),
@@ -42,15 +43,17 @@ public class BookingController {
             @ApiResponse(responseCode = "409", description = "Não há vagas disponíveis ou o usuário já possui reserva para este evento", content = @Content)
     })
     @PostMapping
+    @PreAuthorize("hasRole('CUSTOMER')")
     public CreateBookingResponse createBooking(@Valid @RequestBody CreateBookingRequest request) {
         return bookingService.create(request);
     }
 
     @Operation(
             summary = "Listar minhas reservas",
-            description = "Retorna uma lista paginada com o resumo de todas as reservas efetuadas pelo usuário autenticado."
+            description = "Retorna uma lista paginada com o resumo de todas as reservas efetuadas pelo usuário autenticado. **Acesso restrito a clientes (ROLE_CUSTOMER).**"
     )
     @GetMapping("/me")
+    @PreAuthorize("hasRole('CUSTOMER')")
     public ResponseEntity<Page<BookingSummaryResponse>> listMyBookings(
             @ParameterObject @PageableDefault(size = 10, sort = "createdAt") Pageable pageable) {
         Page<BookingSummaryResponse> bookings = bookingService.findAllMyBookings(pageable);
@@ -73,7 +76,7 @@ public class BookingController {
 
     @Operation(
             summary = "Cancelar reserva",
-            description = "Modifica o status da reserva para cancelado e libera a vaga correspondente no evento. **Operação idempotente.**"
+            description = "Modifica o status da reserva para cancelado e libera a vaga correspondente no evento. \n**Operação idempotente.**\n**Acesso restrito a clientes (ROLE_CUSTOMER).**"
     )
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Reserva cancelada com sucesso e dados atualizados retornados"),
@@ -81,6 +84,7 @@ public class BookingController {
             @ApiResponse(responseCode = "400", description = "A reserva não pode ser cancelada (ex: evento já ocorreu)", content = @Content)
     })
     @DeleteMapping("/{confirmationCode}")
+    @PreAuthorize("hasRole('CUSTOMER')")
     public BookingDetailResponse cancelBookingByConfirmationCode(@PathVariable UUID confirmationCode) {
         return bookingService.cancelBookingByConfirmationCode(confirmationCode);
     }
