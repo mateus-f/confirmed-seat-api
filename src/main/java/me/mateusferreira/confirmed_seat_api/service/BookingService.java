@@ -14,6 +14,7 @@ import me.mateusferreira.confirmed_seat_api.model.entity.Event;
 import me.mateusferreira.confirmed_seat_api.model.entity.User;
 import me.mateusferreira.confirmed_seat_api.model.enums.BookingStatus;
 import me.mateusferreira.confirmed_seat_api.model.enums.EventStatus;
+import me.mateusferreira.confirmed_seat_api.model.enums.UserRole;
 import me.mateusferreira.confirmed_seat_api.repository.BookingRepository;
 import me.mateusferreira.confirmed_seat_api.repository.EventRepository;
 import org.springframework.data.domain.Page;
@@ -70,6 +71,11 @@ public class BookingService {
     private Booking findBooking(UUID confirmationCode) {
         User user = authenticatedUserService.get();
 
+        if (user.getRole() == UserRole.ADMIN) {
+            return bookingRepository.findByConfirmationCode(confirmationCode)
+                    .orElseThrow(() -> new BookingNotFoundException("Inscrição não encontrada!"));
+        }
+
         return bookingRepository.findByConfirmationCodeAndUserId(confirmationCode, user.getId())
                 .orElseThrow(() -> new BookingNotFoundException("Inscrição não encontrada!"));
     }
@@ -87,7 +93,7 @@ public class BookingService {
 
         booking.setStatus(BookingStatus.CANCELLED);
         booking.setCancelledAt(OffsetDateTime.now());
-        
+
         bookingRepository.save(booking);
 
         return BookingDetailMapper.toResponse(booking);

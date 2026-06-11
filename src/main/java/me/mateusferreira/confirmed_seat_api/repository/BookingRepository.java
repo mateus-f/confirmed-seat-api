@@ -17,5 +17,8 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 
     Page<Booking> findAllByUserIdAndStatusNot(Long id, BookingStatus bookingStatus, Pageable pageable);
 
+    Optional<Booking> findByConfirmationCode(UUID confirmationCode);
+
     Optional<Booking> findByConfirmationCodeAndUserId(UUID confirmationCode, Long userId);
+
 }
