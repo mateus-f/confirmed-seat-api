@@ -10,6 +10,7 @@ import me.mateusferreira.confirmed_seat_api.model.dto.request.EventUpdateRequest
 import me.mateusferreira.confirmed_seat_api.model.dto.response.EventCreateResponse;
 import me.mateusferreira.confirmed_seat_api.model.dto.response.EventDetailResponse;
 import me.mateusferreira.confirmed_seat_api.model.dto.response.EventSummaryResponse;
+import me.mateusferreira.confirmed_seat_api.model.dto.response.PageResponse;
 import me.mateusferreira.confirmed_seat_api.model.entity.Event;
 import me.mateusferreira.confirmed_seat_api.repository.EventRepository;
 import org.springframework.data.domain.Page;
@@ -36,10 +37,11 @@ public class EventService {
         return EventCreateMapper.toResponse(event);
     }
 
-    public Page<EventSummaryResponse> findAllAvailable(Pageable pageable) {
+    public PageResponse<EventSummaryResponse> findAllAvailable(Pageable pageable) {
         Page<Event> eventPage = eventRepository.findByIsActiveTrueAndStatus(OPEN_FOR_BOOKING, pageable);
+        Page<EventSummaryResponse> responsePage = eventPage.map(EventSummaryMapper::toResponse);
 
-        return eventPage.map(EventSummaryMapper::toResponse);
+        return PageResponse.from(responsePage);
     }
 
     public EventDetailResponse getEventById(Long id) {

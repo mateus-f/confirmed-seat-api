@@ -11,13 +11,9 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import me.mateusferreira.confirmed_seat_api.model.dto.request.EventCreateRequest;
 import me.mateusferreira.confirmed_seat_api.model.dto.request.EventUpdateRequest;
-import me.mateusferreira.confirmed_seat_api.model.dto.response.ErrorResponse;
-import me.mateusferreira.confirmed_seat_api.model.dto.response.EventCreateResponse;
-import me.mateusferreira.confirmed_seat_api.model.dto.response.EventDetailResponse;
-import me.mateusferreira.confirmed_seat_api.model.dto.response.EventSummaryResponse;
+import me.mateusferreira.confirmed_seat_api.model.dto.response.*;
 import me.mateusferreira.confirmed_seat_api.service.EventService;
 import org.springdoc.core.annotations.ParameterObject;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
@@ -63,9 +59,9 @@ public class EventController {
             @ApiResponse(responseCode = "200", description = "Eventos listados com sucesso")
     })
     @GetMapping
-    public ResponseEntity<Page<EventSummaryResponse>> listAvailableEvents(
+    public ResponseEntity<PageResponse<EventSummaryResponse>> listAvailableEvents(
             @ParameterObject @PageableDefault(size = 10, sort = "eventDate") Pageable pageable) {
-        Page<EventSummaryResponse> event = eventService.findAllAvailable(pageable);
+        PageResponse<EventSummaryResponse> event = eventService.findAllAvailable(pageable);
 
         return ResponseEntity.ok(event);
     }

@@ -12,9 +12,9 @@ import me.mateusferreira.confirmed_seat_api.model.dto.request.CreateBookingReque
 import me.mateusferreira.confirmed_seat_api.model.dto.response.BookingDetailResponse;
 import me.mateusferreira.confirmed_seat_api.model.dto.response.BookingSummaryResponse;
 import me.mateusferreira.confirmed_seat_api.model.dto.response.CreateBookingResponse;
+import me.mateusferreira.confirmed_seat_api.model.dto.response.PageResponse;
 import me.mateusferreira.confirmed_seat_api.service.BookingService;
 import org.springdoc.core.annotations.ParameterObject;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
@@ -54,9 +54,9 @@ public class BookingController {
     )
     @GetMapping("/me")
     @PreAuthorize("hasRole('CUSTOMER')")
-    public ResponseEntity<Page<BookingSummaryResponse>> listMyBookings(
+    public ResponseEntity<PageResponse<BookingSummaryResponse>> listMyBookings(
             @ParameterObject @PageableDefault(size = 10, sort = "createdAt") Pageable pageable) {
-        Page<BookingSummaryResponse> bookings = bookingService.findAllMyBookings(pageable);
+        PageResponse<BookingSummaryResponse> bookings = bookingService.findAllMyBookings(pageable);
 
         return ResponseEntity.ok(bookings);
     }

@@ -9,6 +9,7 @@ import me.mateusferreira.confirmed_seat_api.model.dto.request.CreateBookingReque
 import me.mateusferreira.confirmed_seat_api.model.dto.response.BookingDetailResponse;
 import me.mateusferreira.confirmed_seat_api.model.dto.response.BookingSummaryResponse;
 import me.mateusferreira.confirmed_seat_api.model.dto.response.CreateBookingResponse;
+import me.mateusferreira.confirmed_seat_api.model.dto.response.PageResponse;
 import me.mateusferreira.confirmed_seat_api.model.entity.Booking;
 import me.mateusferreira.confirmed_seat_api.model.entity.Event;
 import me.mateusferreira.confirmed_seat_api.model.entity.User;
@@ -46,7 +47,7 @@ public class BookingService {
         }
 
         if (event.getStatus() == EventStatus.FINISHED || OffsetDateTime.now().isAfter(event.getEventDate())) {
-            throw new EventFinishedException("Inscrições do evento encerrada!");
+            throw new EventFinishedException("Reservas do evento encerradas!");
         }
 
         if (eventService.calculateAvailableSeats(event) == 0) {
@@ -60,12 +61,13 @@ public class BookingService {
         return CreateBookingMapper.toResponse(booking);
     }
 
-    public Page<BookingSummaryResponse> findAllMyBookings(Pageable pageable) {
+    public PageResponse<BookingSummaryResponse> findAllMyBookings(Pageable pageable) {
         User user = authenticatedUserService.get();
 
         Page<Booking> bookingPage = bookingRepository.findAllByUserIdAndStatusNot(user.getId(), BookingStatus.CANCELLED, pageable);
+        Page<BookingSummaryResponse> responsePage = bookingPage.map(BookingSummaryMapper::toResponse);
 
-        return bookingPage.map(BookingSummaryMapper::toResponse);
+        return PageResponse.from(responsePage);
     }
 
     private Booking findBooking(UUID confirmationCode) {
@@ -73,11 +75,11 @@ public class BookingService {
 
         if (user.getRole() == UserRole.ADMIN) {
             return bookingRepository.findByConfirmationCode(confirmationCode)
-                    .orElseThrow(() -> new BookingNotFoundException("Inscrição não encontrada!"));
+                    .orElseThrow(() -> new BookingNotFoundException("Reserva não encontrada!"));
         }
 
         return bookingRepository.findByConfirmationCodeAndUserId(confirmationCode, user.getId())
-                .orElseThrow(() -> new BookingNotFoundException("Inscrição não encontrada!"));
+                .orElseThrow(() -> new BookingNotFoundException("Reserva não encontrada!"));
     }
 
     public BookingDetailResponse getBookingByConfirmationCode(UUID confirmationCode) {
@@ -89,7 +91,7 @@ public class BookingService {
         Booking booking = findBooking(confirmationCode);
 
         if (booking.getStatus() == BookingStatus.CANCELLED) {
-            throw new BusinessException("Inscrição do evento já se encontra cancelada!");
+            throw new BusinessException("Reserva em evento já se encontra cancelada!");
         }
 
         booking.setStatus(BookingStatus.CANCELLED);
