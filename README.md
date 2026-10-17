@@ -1,41 +1,37 @@
-![Em Desenvolvimento](https://img.shields.io/badge/status-em%20desenvolvimento-yellow?style=for-the-badge)
+# Confirmed Seat API
 
-# 🎫 Confirmed Seat | CS-API
+API REST para gerenciamento de reservas em eventos técnicos e corporativos. O sistema controla a capacidade dos
+eventos e evita reservas duplicadas mesmo sob alta concorrência.
 
-**API de gerenciamento de inscrições em eventos técnicos e corporativos, com controle de vagas, fila de espera
-automática e proteção contra inscrições duplicadas sob alta concorrência.**
+[![Java](https://img.shields.io/badge/Java-17-ED8B00?logo=openjdk&logoColor=white)](https://openjdk.org/)
+[![Spring_Boot](https://img.shields.io/badge/Spring_Boot-3-6DB33F?logo=springboot&logoColor=white)](https://spring.io/projects/spring-boot)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-4169E1?logo=postgresql&logoColor=white)](https://www.postgresql.org/)
+[![Docker](https://img.shields.io/badge/Docker-2496ED?logo=docker&logoColor=white)](https://www.docker.com/)
+[![JWT](https://img.shields.io/badge/JWT-Authentication-000000?logo=jsonwebtokens&logoColor=white)](https://jwt.io/)
+[![Swagger](https://img.shields.io/badge/Swagger-OpenAPI-85EA2D?logo=swagger&logoColor=black)](https://swagger.io/)
+[![Flyway](https://img.shields.io/badge/Flyway-Migrations-CC0200?logo=flyway&logoColor=white)](https://flywaydb.org/)
 
-![Java](https://img.shields.io/badge/Java_17-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)
-![Spring Boot](https://img.shields.io/badge/Spring_Boot_3-6DB33F?style=for-the-badge&logo=springboot&logoColor=white)
-![PostgreSQL](https://img.shields.io/badge/PostgreSQL_16-4169E1?style=for-the-badge&logo=postgresql&logoColor=white)
-![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
-![JWT](https://img.shields.io/badge/JWT-000000?style=for-the-badge&logo=jsonwebtokens&logoColor=white)
-![Swagger](https://img.shields.io/badge/Swagger-85EA2D?style=for-the-badge&logo=swagger&logoColor=black)
-![Flyway](https://img.shields.io/badge/Flyway-CC0200?style=for-the-badge&logo=flyway&logoColor=white)
+## Sumário
 
-## 📋 Índice
+- [Visão geral](#visão-geral)
+- [Stack tecnológica](#stack-tecnológica)
+- [Modelagem do banco de dados](#modelagem-do-banco-de-dados)
+- [Endpoints da API](#endpoints-da-api)
+- [Como executar](#como-executar)
+- [Variáveis de ambiente](#variáveis-de-ambiente)
 
-- [Sobre o Projeto](#-sobre-o-projeto)
-- [Stack Tecnológica](#️-stack-tecnológica)
-- [Modelagem do Banco de Dados](#️-modelagem-do-banco-de-dados)
-- [Endpoints da API](#-endpoints-da-api)
-- [Como Executar](#-como-executar)
-- [Variáveis de Ambiente](#-variáveis-de-ambiente)
+## Visão geral
 
-## 🚀 Sobre o Projeto
+O **Confirmed Seat** permite que administradores criem eventos definindo título, data, local e capacidade máxima.
+Usuários autenticados podem reservar vagas e recebem um **código de confirmação único** (UUID v4) para identificar a
+reserva.
 
-O **Confirmed Seat** é uma API REST para gerenciamento de inscrições em eventos. Um administrador cria um evento
-definindo título, data, local e o **número máximo de vagas disponíveis**. Usuários autenticados se inscrevem no evento e
-recebem um **código de confirmação único** (UUID v4) que comprova sua inscrição.
+O controle de concorrência garante que reservas simultâneas respeitem o limite de vagas e não criem duplicatas.
 
-O principal desafio técnico endereçado é o **controle de concorrência**: quando múltiplos usuários tentam se inscrever
-simultaneamente nas últimas vagas disponíveis, o sistema garante que o limite seja respeitado com precisão, sem
-duplicatas e sem inscrições além da capacidade.
+O campo `confirmation_code` é o identificador público da reserva e pode ser usado para validação de entrada sem
+expor o identificador sequencial interno do banco.
 
-> 💡 O `confirmation_code` (UUID v4) é o identificador público da inscrição, utilizado para validação de entrada no
-> evento sem expor o ID sequencial interno do banco.
-
-## 🛠️ Stack Tecnológica
+## Stack tecnológica
 
 | Camada          | Tecnologia                     |
 |-----------------|--------------------------------|
@@ -48,7 +44,7 @@ duplicatas e sem inscrições além da capacidade.
 | Documentação    | SpringDoc OpenAPI (Swagger UI) |
 | Containerização | Docker & Docker Compose        |
 
-## 🗄️ Modelagem do Banco de Dados
+## Modelagem do banco de dados
 
 ### Diagrama Entidade-Relacionamento
 
@@ -89,8 +85,8 @@ erDiagram
         TIMESTAMPTZ     updated_at
     }
  
-    USERS  ||--o{ BOOKINGS : "se inscreve"
-    EVENTS ||--o{ BOOKINGS : "recebe inscrições"
+    USERS  ||--o{ BOOKINGS : "faz reservas"
+    EVENTS ||--o{ BOOKINGS : "recebe reservas"
 ```
 
 ### ENUMs
@@ -98,7 +94,7 @@ erDiagram
 ```
 user_role        → ADMIN | CUSTOMER
 event_status     → OPEN_FOR_BOOKING | FINISHED
-booking_status   → CONFIRMED | CANCELLED | WAITING
+booking_status   → CONFIRMED | CANCELLED
 ```
 
 ### Índices
@@ -109,25 +105,25 @@ booking_status   → CONFIRMED | CANCELLED | WAITING
 | `idx_user_cpf`             | `users`    | `cpf`               | B-Tree |
 | `idx_booking_confirmation` | `bookings` | `confirmation_code` | B-Tree |
 
-## 📡 Endpoints da API
+## Endpoints da API
 
-> A documentação interativa completa está disponível via **Swagger UI** em `http://localhost:8080/swagger-ui/index.html`
-> após subir a aplicação.
+Após iniciar a aplicação, a documentação interativa está disponível no
+[Swagger UI](http://localhost:8080/docs).
 
-### 🔑 Auth
+### Autenticação
 
 | Método | Endpoint         | Acesso  | Descrição                     |
 |--------|------------------|---------|-------------------------------|
 | `POST` | `/auth/register` | Público | Cadastro de novo usuário      |
 | `POST` | `/auth/login`    | Público | Autenticação e geração do JWT |
 
-### 👤 Users
+### Usuários
 
 | Método | Endpoint    | Acesso      | Descrição                    |
 |--------|-------------|-------------|------------------------------|
 | `GET`  | `/users/me` | Autenticado | Dados do usuário autenticado |
 
-### 📅 Events
+### Eventos
 
 | Método   | Endpoint              | Acesso      | Descrição                                    |
 |----------|-----------------------|-------------|----------------------------------------------|
@@ -138,16 +134,16 @@ booking_status   → CONFIRMED | CANCELLED | WAITING
 | `PATCH`  | `/events/{id}/status` | `ADMIN`     | Altera status (ex: `OPEN` para `FINISHED`)   |
 | `DELETE` | `/events/{id}`        | `ADMIN`     | Desativa o evento (soft delete)              |
 
-### 📝 Inscrições (Bookings)
+### Reservas (Bookings)
 
 | Método   | Endpoint                       | Acesso      | Descrição                                  |
 |----------|--------------------------------|-------------|--------------------------------------------|
-| `POST`   | `/bookings`                    | `CUSTOMER`  | Realiza inscrição em um evento             |
-| `GET`    | `/bookings/me`                 | `CUSTOMER`  | Lista inscrições do usuário autenticado    |
-| `GET`    | `/bookings/{confirmationCode}` | Autenticado | Busca inscrição pelo código de confirmação |
-| `DELETE` | `/bookings/{confirmationCode}` | `CUSTOMER`  | Cancela uma inscrição e libera vaga        |
+| `POST`   | `/bookings`                    | `CUSTOMER`  | Reserva uma vaga em um evento               |
+| `GET`    | `/bookings/me`                 | `CUSTOMER`  | Lista reservas do usuário autenticado       |
+| `GET`    | `/bookings/{confirmationCode}` | Autenticado | Busca reserva pelo código de confirmação    |
+| `DELETE` | `/bookings/{confirmationCode}` | `CUSTOMER`  | Cancela uma reserva e libera vaga            |
 
-## 🚀 Como Executar
+## Como executar
 
 ### Pré-requisitos
 
@@ -155,7 +151,7 @@ booking_status   → CONFIRMED | CANCELLED | WAITING
 - Docker e Docker Compose
 - OpenSSL
 
-### 1. Gerar as chaves RSA
+### Gerar as chaves RSA
 
 A aplicação usa a chave privada para assinar os tokens JWT e a chave pública para validá-los. Gere ambas no caminho
 esperado pela aplicação:
@@ -169,7 +165,7 @@ openssl pkey -in src/main/resources/certs/authz.pem -pubout -out src/main/resour
 A pasta `src/main/resources/certs/` é ignorada pelo Git e precisa existir localmente antes de iniciar a API. Não
 compartilhe nem versione a chave privada `authz.pem`.
 
-### 2. Iniciar o banco de dados
+### Iniciar o banco de dados
 
 Na raiz do projeto, execute:
 
@@ -179,7 +175,7 @@ docker compose up -d db
 
 O PostgreSQL ficará disponível na porta `5433` da máquina local.
 
-### 3. Iniciar a aplicação
+### Iniciar a aplicação
 
 Com o banco em execução e as chaves geradas, inicie a API:
 
@@ -190,7 +186,7 @@ Com o banco em execução e as chaves geradas, inicie a API:
 A API estará disponível em `http://localhost:8080`. A documentação interativa do Swagger pode ser acessada em
 `http://localhost:8080/docs`.
 
-## ⚙️ Variáveis de Ambiente
+## Variáveis de ambiente
 
 | Variável      | Valor padrão                                                      | Descrição                                      |
 |---------------|-------------------------------------------------------------------|------------------------------------------------|
